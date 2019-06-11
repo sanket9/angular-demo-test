@@ -1,0 +1,25 @@
+.main-containt{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.example-form {
+    min-width: 525px;
+    max-width: 600px;
+    width: 100%;
+  }
+  
+  .example-full-width {
+    width: 48%;
+    padding: 0 6px;
+  }
+
+  table {
+    width: 80%;
+    margin: 40px auto;
+  }
+  
+  th.mat-sort-header-sorted {
+    color: black;
+  }
