@@ -46,7 +46,8 @@
               <input matInput placeholder="Country" type="text" formControlName="country">
               <mat-error *ngIf="userDetailsForm.controls['country'].invalid && (userDetailsForm.controls['country'].dirty || userDetailsForm.controls['country'].touched)">This is required.</mat-error>
             </mat-form-field>
-            <button type="submit" [disabled]="!userDetailsForm.valid" mat-raised-button color="primary">Save</button>
+            <button type="submit" *ngIf="id == null" [disabled]="!userDetailsForm.valid" mat-raised-button color="primary">Save</button>
+            <button type="button" *ngIf="id != null" [disabled]="!userDetailsForm.valid" mat-raised-button color="primary" (click)="onUpdate(userDetailsForm.value)" >Update</button>
         </form>
     </mat-card-content>
   </mat-card>
@@ -85,7 +86,21 @@
     <th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>
     <td mat-cell *matCellDef="let element"> {{element.address.street}}, {{element.address.city}}, {{element.address.country}} </td>
   </ng-container>
-  
+   <!-- Name Actions -->
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef> Action </th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button type="button" (click)="selecteditStaff(element)">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">edit</mat-icon>
+      </button>
+      <button mat-icon-button type="button" (click)="delete(element._id)">
+          <mat-icon aria-hidden="false" aria-label="Example home icon">delete</mat-icon>
+      </button>
+      <!-- <button mat-icon-button >
+        <mat-icon>remove_red_eye</mat-icon>
+      </button> -->
+    </td>
+  </ng-container>
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 </table>

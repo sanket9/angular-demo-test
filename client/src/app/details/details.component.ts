@@ -20,12 +20,12 @@ export class DetailsComponent implements OnInit {
 
   detailsList: any;
   displayedColumns = [
-    "id", 'name', 'father_name', 'email', 'phone', 'address'
+    "id", 'name', 'father_name', 'email', 'phone', 'address', 'actions'
   ]
   userDetailsForm: FormGroup;
   dataSource = new MatTableDataSource<Element>();
   // selection = new SelectionModel<Element>(true, []);
-
+  id:number = null;
   constructor(public http: HttpClient,private _snackBar: MatSnackBar) { }
 
   ngOnInit() {
@@ -35,7 +35,7 @@ export class DetailsComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-    console.log(this.sort);
+    // console.log(this.sort);
     
     // this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
@@ -62,8 +62,22 @@ export class DetailsComponent implements OnInit {
       country: new FormControl("", [Validators.required]),
     })
     
-    console.log(this.userDetailsForm.controls['email']);
+    // console.log(this.userDetailsForm.controls['email']);
      
+  }
+  selecteditStaff(element) {
+    // console.log(element);
+    this.userDetailsForm.patchValue({
+      name: element.name,
+      fathername: element.father_name,
+      email: element.email,
+      phone: element.phone,
+      street: element.address.street,
+      city: element.address.city,
+      country: element.address.country
+
+    })
+    this.id = element._id
   }
 
   onSubmit(values: any){
@@ -91,13 +105,48 @@ export class DetailsComponent implements OnInit {
       
     })
   }
+  onUpdate(values: any){
+    // console.log(values);
+    values.address = {
+      street: values.street,
+      city: values.city,
+      country: values.country
+    } 
+    values._id = this.id;
+    // console.log("form", values);
 
+    let headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+    let options = { headers: headers };
+    this.http.post(`${environment.apiUrl}update`,values,options).subscribe((data:any) => {
+      // console.log(data);
+      if (data.status == 200) {
+        this.getAllList();
+        this.openSnackBar(data.message, "close")
+      }else{
+        this.openSnackBar(data.message, "close")
+      }
+      
+    })
+  }
   openSnackBar(message: string, action: string) {
     this._snackBar.open(message, action, {
       duration: 2000,
     });
   }
-
+  delete(id) {
+    if (confirm('Do you want to delete it?')) {
+      
+      this.http.get(`${environment.apiUrl}delete/${id}`).subscribe((data: any)=> {
+        // console.log(data);
+        if(data.status == 200){
+          this.getAllList();
+          this.openSnackBar(data.message, "close")
+        }
+      })
+    }
+  }
 }
 
 export interface PeriodicElement {
@@ -106,4 +155,5 @@ export interface PeriodicElement {
   phone: number;
   email: string;
   address: string;
+  actions: string;
 }

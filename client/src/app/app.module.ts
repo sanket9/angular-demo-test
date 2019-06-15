@@ -12,7 +12,8 @@ import {
   MatInputModule,
   MatSnackBarModule,
   MatTableModule,
-  MatSortModule
+  MatSortModule,
+  MatIconModule
 } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -38,6 +39,7 @@ import { DetailsComponent } from './details/details.component';
     MatSnackBarModule,
     MatTableModule ,
     MatSortModule,
+    MatIconModule,
     ReactiveFormsModule,HttpClientModule
   ],
   providers: [],

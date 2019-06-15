@@ -118,5 +118,53 @@ api.get('/get/:id', (req, res)=>{
             throw new Error(err);
         }
     })
+});
+api.post('/update', (req, res)=>{
+    const {_id,name, fathername,address,email,phone} = req.body;
+    UserDetails.findOneAndUpdate(
+        {_id: _id},
+        {
+            name, fathername,email,phone,
+            address: {
+                street: address.street,
+                city: address.city,
+                country: address.country,
+            },
+            
+        },{ new: true },
+        (
+        err,
+        updateddata
+        ) => {
+            if (!err) {
+                res.json({
+                    'status': res.statusCode,
+                    'message': 'data Updated',
+                    updateddata
+                })
+            }else{
+                throw new Error(err);
+            }
+        }
+
+    )
+});
+
+api.get('/delete/:id', (req, res)=>{
+    const id = req.params.id;
+    UserDetails.findOneAndRemove({_id: id},(err,data) => {
+        if (!err) {
+            res.json({
+                'status': res.statusCode,
+                'message': 'data Deleted',
+                
+            })
+        }else{
+            throw new Error(err);
+        }
+    })
 })
+
+
+
 module.exports = api;
