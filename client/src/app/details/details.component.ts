@@ -1,10 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from "@angular/router";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
-import { environment } from "../../environments/environment";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
-
+import { ApiserviceService } from "../apiservice.service";
 import {MatSort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 
@@ -26,7 +24,7 @@ export class DetailsComponent implements OnInit {
   dataSource = new MatTableDataSource<Element>();
   // selection = new SelectionModel<Element>(true, []);
   id:number = null;
-  constructor(public http: HttpClient,private _snackBar: MatSnackBar) { }
+  constructor(public apiService: ApiserviceService,private _snackBar: MatSnackBar) { }
 
   ngOnInit() {
     
@@ -42,8 +40,7 @@ export class DetailsComponent implements OnInit {
   }
 
   getAllList(){
-    let id = JSON.parse(localStorage.getItem('user-data'))._id
-    this.http.get(`${environment.apiUrl}get/${id}`).subscribe((data: any)=> {
+    this.apiService.getAllList().subscribe((data: any)=> {
       // console.log(data);
       if(data.status == 200){
         this.dataSource.data = data.list
@@ -90,11 +87,7 @@ export class DetailsComponent implements OnInit {
     } 
     // console.log("form", values);
 
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    let options = { headers: headers };
-    this.http.post(`${environment.apiUrl}add-details`,values,options).subscribe((data:any) => {
+    this.apiService.onAddData(values).subscribe((data:any) => {
       // console.log(data);
       if (data.status == 200) {
         this.getAllList();
@@ -115,11 +108,7 @@ export class DetailsComponent implements OnInit {
     values._id = this.id;
     // console.log("form", values);
 
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    let options = { headers: headers };
-    this.http.post(`${environment.apiUrl}update`,values,options).subscribe((data:any) => {
+    this.apiService.onEditData(values).subscribe((data:any) => {
       // console.log(data);
       if (data.status == 200) {
         this.getAllList();
@@ -138,7 +127,7 @@ export class DetailsComponent implements OnInit {
   delete(id) {
     if (confirm('Do you want to delete it?')) {
       
-      this.http.get(`${environment.apiUrl}delete/${id}`).subscribe((data: any)=> {
+      this.apiService.onDelete(id).subscribe((data: any)=> {
         // console.log(data);
         if(data.status == 200){
           this.getAllList();

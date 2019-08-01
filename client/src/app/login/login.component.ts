@@ -1,10 +1,9 @@
 import { Component, OnInit, createPlatformFactory } from '@angular/core';
 import { Router } from "@angular/router";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { DetailsComponent } from "../details/details.component";
 import { environment } from "../../environments/environment";
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-
+import { ApiserviceService } from "../apiservice.service";
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -15,7 +14,7 @@ export class LoginComponent implements OnInit {
   loginError: string;
   constructor(
     public route: Router,
-    public http: HttpClient
+    public apiServiece:ApiserviceService
   ) { }
 
   ngOnInit() {
@@ -35,11 +34,7 @@ export class LoginComponent implements OnInit {
   onLoginSubmit(formData) {
     // console.log("here",formData);
     this.loginError = "";
-    let headers = new HttpHeaders({
-      'Content-Type': 'application/json'
-    });
-    let options = { headers: headers };
-    this.http.post(`${environment.apiUrl}login`,formData,options).subscribe((data:any) => {
+    this.apiServiece.login(formData).subscribe((data:any) => {
       // console.log(data);
       if (data.status == 400) {
         this.loginError = data.message;
